@@ -78,9 +78,9 @@ textarea{resize:vertical;min-height:60px}
 </head>
 <body>
 <div id="app"><div class="center"><div class="panel" style="text-align:center"><p style="color:#6a6050">Loading...</p></div></div></div>
-<div class="overlay" id="overlay" onclick="closeAllPanels()"></div>
-<div class="slide-panel" id="calPanel"><div class="slide-panel-header"><h2>CALENDAR</h2><span class="slide-panel-close" onclick="closeAllPanels()">✕</span></div><div class="slide-panel-body" id="calBody"></div></div>
-<div class="slide-panel" id="sheetPanel"><div class="slide-panel-header"><h2>CHARACTER SHEET</h2><span class="slide-panel-close" onclick="closeAllPanels()">✕</span></div><div class="slide-panel-body" id="sheetBody"></div></div>
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
+<div class="slide-panel" id="calPanel"><div class="slide-panel-header"><h2>CALENDAR</h2><span class="slide-panel-close" onclick="closeAll()">✕</span></div><div class="slide-panel-body" id="calBody"></div></div>
+<div class="slide-panel" id="sheetPanel"><div class="slide-panel-header"><h2>CHARACTER SHEET</h2><span class="slide-panel-close" onclick="closeAll()">✕</span></div><div class="slide-panel-body" id="sheetBody"></div></div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script>
