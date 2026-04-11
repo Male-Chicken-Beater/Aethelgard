@@ -557,6 +557,16 @@ async function callDM(playerAction,type='player'){
       const idx=order.indexOf(gameData.turn);
       const next=order[(idx+1)%order.length];
       gameRef.child('turn').set(next);
+    } else if(gameData?.turnOrder?.length===1){
+      // Solo mode — ensure turn always stays on the solo player
+      gameRef.child('turn').set(gameData.turnOrder[0]);
+    } else {
+      // No turn order set — set it now from players list
+      const playerNames=Object.keys(gameData?.players||{});
+      if(playerNames.length>0){
+        gameRef.child('turnOrder').set(playerNames);
+        gameRef.child('turn').set(playerNames[0]);
+      }
     }
 
     // Advance calendar (every 4 actions = 1 day)
@@ -1034,9 +1044,11 @@ function render(){
     const players=Object.entries(gameData.players||{});
     const myChar=gameData.players?.[state.playerName];
     const isMyTurn=gameData.turn===state.playerName;
+    const isSolo=gameData.mode==='solo'||Object.keys(gameData.players||{}).length===1;
+    const isHost=gameData.host===state.playerName;
+    const canAct=isMyTurn||isSolo||isHost; // Host/solo can always act
     const currentTurnPlayer=gameData.turn;
     const ctc=gameData.players?.[currentTurnPlayer];
-    const isHost=gameData.host===state.playerName;
     const cal=gameData.calendar||{day:1,month:0,year:1247};
     const md=MONTHS[cal.month]||MONTHS[0];
     const entries=narrativeData;
@@ -1081,8 +1093,8 @@ function render(){
               <div id="narr-end"></div>
             </div>
             <div class="input-bar">
-              <input type="text" id="actionIn" value="${esc(state.actionText)}" placeholder="${isMyTurn?'What does '+(myChar?.charName||'')+' do?':'Waiting for '+(ctc?.charName||'...')+'...'}" ${!isMyTurn||state.loading?'disabled':''} onkeydown="if(event.key==='Enter'){state.actionText=this.value;submitAction()}" oninput="state.actionText=this.value">
-              <button class="btn-sm" style="padding:10px 16px;background:var(--panel);border:1px solid var(--gold-dim);color:var(--gold);border-radius:4px;cursor:pointer;opacity:${isMyTurn&&!state.loading?1:0.4}" onclick="state.actionText=document.getElementById('actionIn').value;submitAction()" ${!isMyTurn||state.loading?'disabled':''}>▸</button>
+              <input type="text" id="actionIn" value="${esc(state.actionText)}" placeholder="${canAct?'What does '+(myChar?.charName||'')+' do?':'Waiting for '+(ctc?.charName||'...')+'...'}" ${!canAct||state.loading?'disabled':''} onkeydown="if(event.key==='Enter'){state.actionText=this.value;submitAction()}" oninput="state.actionText=this.value">
+              <button class="btn-sm" style="padding:10px 16px;background:var(--panel);border:1px solid var(--gold-dim);color:var(--gold);border-radius:4px;cursor:pointer;opacity:${canAct&&!state.loading?1:0.4}" onclick="state.actionText=document.getElementById('actionIn').value;submitAction()" ${!canAct||state.loading?'disabled':''}>▸</button>
             </div>
             <div class="footer-bar">
               <span>/roll 1d20+3</span>
@@ -1132,7 +1144,7 @@ function render(){
 
     if(state.activeTab==='narrative'){
       setTimeout(scrollNarrative,50);
-      if(isMyTurn&&!state.loading){
+      if(canAct&&!state.loading){
         setTimeout(()=>{const inp=document.getElementById('actionIn');if(inp&&!inp.matches(':focus'))inp.focus()},100);
       }
     }
