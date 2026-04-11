@@ -463,8 +463,9 @@ function startCampaign(){
   if(gameData.host!==state.playerName)return;
   // Don't start if already playing
   if(gameData.status==='playing')return;
-  
+  // In multiplayer, require at least 2 players
   const players=Object.keys(gameData.players||{});
+  if(gameData.mode!=='solo'&&players.length<2)return;
   const order=[...players];
   gameRef.update({status:'playing',turn:order[0],turnOrder:order});
   
@@ -556,18 +557,22 @@ async function callDM(playerAction,type='player'){
 
     narrRef.push({t:'dm',text:dmText,ts:Date.now()});
 
-    // Advance turn
-    const order=gameData?.turnOrder||[];
-    if(order.length>1){
-      const idx=order.indexOf(gameData.turn);
-      const next=order[(idx+1)%order.length];
-      gameRef.child('turn').set(next);
-    } else if(order.length===0){
+    // Advance turn - read fresh from gameData
+    const turnOrder=Array.isArray(gameData?.turnOrder)?gameData.turnOrder:Object.values(gameData?.turnOrder||{});
+    const currentTurn2=gameData?.turn||'';
+    console.log('[TURN] order:',turnOrder,'current:',currentTurn2);
+    if(turnOrder.length>1){
+      const idx=turnOrder.indexOf(currentTurn2);
+      const nextIdx=(idx+1)%turnOrder.length;
+      const next=turnOrder[nextIdx];
+      console.log('[TURN] advancing from',currentTurn2,'to',next,'(idx',idx,'->',nextIdx,')');
+      await gameRef.child('turn').set(next);
+    } else if(turnOrder.length===0){
       // No turn order set yet — create one from players
       const playerNames=Object.keys(gameData?.players||{});
       if(playerNames.length>0){
-        gameRef.child('turnOrder').set(playerNames);
-        gameRef.child('turn').set(playerNames[0]);
+        await gameRef.child('turnOrder').set(playerNames);
+        await gameRef.child('turn').set(playerNames[0]);
       }
     }
     // Solo: turn stays on the only player automatically
@@ -1044,7 +1049,7 @@ function render(){
           </div>
         </div>
       `).join('')}
-      ${isHost?`<button class="btn" ${players.length<1?'disabled':''}onclick="startCampaign()">BEGIN CAMPAIGN${players.length<2?' (waiting for players...)':''}</button>`:`<div style="text-align:center;color:var(--text-dim);font-size:13px;margin-top:12px">Waiting for ${esc(gameData.host)} to start the game...</div>`}
+      ${isHost?`<button class="btn" ${players.length<2?'disabled style="opacity:0.4;cursor:not-allowed"':''}onclick="startCampaign()">${players.length<2?'WAITING FOR PLAYERS...':'BEGIN CAMPAIGN ('+players.length+' players)'}</button>`:`<div style="text-align:center;color:var(--text-dim);font-size:13px;margin-top:12px">Waiting for ${esc(gameData.host)} to start the game...</div>`}
       <button class="btn btn-danger" style="margin-top:8px" onclick="resetGame()">LEAVE GAME</button>
     </div></div>`;
     return;
