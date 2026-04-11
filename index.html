@@ -459,6 +459,11 @@ function createMultiGame(charData){
 
 function startCampaign(){
   if(!gameData)return;
+  // Only the host can start
+  if(gameData.host!==state.playerName)return;
+  // Don't start if already playing
+  if(gameData.status==='playing')return;
+  
   const players=Object.keys(gameData.players||{});
   const order=[...players];
   gameRef.update({status:'playing',turn:order[0],turnOrder:order});
@@ -552,22 +557,20 @@ async function callDM(playerAction,type='player'){
     narrRef.push({t:'dm',text:dmText,ts:Date.now()});
 
     // Advance turn
-    if(gameData?.turnOrder?.length>1){
-      const order=gameData.turnOrder;
+    const order=gameData?.turnOrder||[];
+    if(order.length>1){
       const idx=order.indexOf(gameData.turn);
       const next=order[(idx+1)%order.length];
       gameRef.child('turn').set(next);
-    } else if(gameData?.turnOrder?.length===1){
-      // Solo mode — ensure turn always stays on the solo player
-      gameRef.child('turn').set(gameData.turnOrder[0]);
-    } else {
-      // No turn order set — set it now from players list
+    } else if(order.length===0){
+      // No turn order set yet — create one from players
       const playerNames=Object.keys(gameData?.players||{});
       if(playerNames.length>0){
         gameRef.child('turnOrder').set(playerNames);
         gameRef.child('turn').set(playerNames[0]);
       }
     }
+    // Solo: turn stays on the only player automatically
 
     // Advance calendar (every 4 actions = 1 day)
     const actionCount=narrativeData.filter(e=>e.t==='player').length;
@@ -1044,9 +1047,9 @@ function render(){
     const players=Object.entries(gameData.players||{});
     const myChar=gameData.players?.[state.playerName];
     const isMyTurn=gameData.turn===state.playerName;
-    const isSolo=gameData.mode==='solo'||Object.keys(gameData.players||{}).length===1;
+    const isSolo=gameData.mode==='solo';
     const isHost=gameData.host===state.playerName;
-    const canAct=isMyTurn||isSolo||isHost; // Host/solo can always act
+    const canAct=isMyTurn||isSolo; // Solo can always act; multiplayer respects turns
     const currentTurnPlayer=gameData.turn;
     const ctc=gameData.players?.[currentTurnPlayer];
     const cal=gameData.calendar||{day:1,month:0,year:1247};
