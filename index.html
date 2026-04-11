@@ -555,27 +555,42 @@ async function callDM(playerAction,type='player'){
     // Clean discover tags from display text
     dmText=dmText.replace(/\[DISCOVER:\w+\]/g,'').trim();
 
-    narrRef.push({t:'dm',text:dmText,ts:Date.now()});
-
-    // Advance turn - read fresh from gameData
-    const turnOrder=Array.isArray(gameData?.turnOrder)?gameData.turnOrder:Object.values(gameData?.turnOrder||{});
-    const currentTurn2=gameData?.turn||'';
-    console.log('[TURN] order:',turnOrder,'current:',currentTurn2);
-    if(turnOrder.length>1){
-      const idx=turnOrder.indexOf(currentTurn2);
-      const nextIdx=(idx+1)%turnOrder.length;
-      const next=turnOrder[nextIdx];
-      console.log('[TURN] advancing from',currentTurn2,'to',next,'(idx',idx,'->',nextIdx,')');
-      await gameRef.child('turn').set(next);
-    } else if(turnOrder.length===0){
-      // No turn order set yet — create one from players
-      const playerNames=Object.keys(gameData?.players||{});
-      if(playerNames.length>0){
-        await gameRef.child('turnOrder').set(playerNames);
-        await gameRef.child('turn').set(playerNames[0]);
+    // Advance turn BEFORE pushing narrative (narrative push triggers re-render)
+    try{
+      const rawOrder=gameData?.turnOrder;
+      let turnOrder=[];
+      if(Array.isArray(rawOrder)){
+        turnOrder=rawOrder;
+      } else if(rawOrder&&typeof rawOrder==='object'){
+        turnOrder=Object.values(rawOrder);
       }
+      const currentTurn2=gameData?.turn||state.playerName;
+      console.log('[TURN] turnOrder:',JSON.stringify(turnOrder),'currentTurn:',currentTurn2);
+      
+      if(turnOrder.length>1){
+        let idx=turnOrder.indexOf(currentTurn2);
+        if(idx===-1)idx=0;
+        const nextIdx=(idx+1)%turnOrder.length;
+        const next=turnOrder[nextIdx];
+        console.log('[TURN] advancing:',currentTurn2,'->',next);
+        gameRef.child('turn').set(next);
+      } else if(turnOrder.length<=1){
+        const playerNames=Object.keys(gameData?.players||{});
+        console.log('[TURN] rebuilding turnOrder from players:',playerNames);
+        if(playerNames.length>1){
+          gameRef.child('turnOrder').set(playerNames);
+          const idx2=playerNames.indexOf(currentTurn2);
+          const next2=playerNames[((idx2===-1?0:idx2)+1)%playerNames.length];
+          gameRef.child('turn').set(next2);
+          console.log('[TURN] rebuilt and advancing to:',next2);
+        }
+      }
+    }catch(turnErr){
+      console.error('[TURN] Error advancing turn:',turnErr);
     }
-    // Solo: turn stays on the only player automatically
+
+    // Now push the DM response to narrative
+    narrRef.push({t:'dm',text:dmText,ts:Date.now()});
 
     // Advance calendar (every 4 actions = 1 day)
     const actionCount=narrativeData.filter(e=>e.t==='player').length;
