@@ -40,6 +40,10 @@ textarea{resize:vertical;min-height:60px}
 .msg-player{background:#1e2a1e;border-left:3px solid #6aaf6a;padding:10px 14px;border-radius:0 8px 8px 0;font-size:14px;line-height:1.5}
 .msg-system{text-align:center;font-size:13px;color:#c8a96e;font-weight:600;padding:8px;letter-spacing:2px;font-family:'Cinzel',serif}
 .msg-dice{text-align:center;font-size:13px;color:#ffb74d;padding:4px;font-style:italic}
+.msg-inv{text-align:center;font-size:12px;color:#a5d6a7;padding:4px;font-family:'Cinzel',serif;letter-spacing:1px}
+.condition-badge{display:inline-block;padding:2px 8px;font-size:10px;border-radius:10px;margin:2px;font-family:'Cinzel',serif;letter-spacing:1px}
+.condition-badge.negative{background:#3a1a1a;border:1px solid #c87a6a;color:#c87a6a}
+.condition-badge.positive{background:#1a2a1a;border:1px solid #6aaf6a;color:#6aaf6a}
 .player-tag{font-size:11px;font-weight:600;color:#6aaf6a;margin-bottom:4px}
 .input-bar{display:flex;gap:8px;padding:12px 16px;border-top:1px solid #2a2735;background:#14141f}
 .input-bar input{flex:1;font-size:14px;padding:10px}
@@ -120,13 +124,138 @@ textarea{resize:vertical;min-height:60px}
 const firebaseConfig={apiKey:"AIzaSyD7rwt_Wm6tZ_nVTaK94M1R0Ppsed8CpiU",authDomain:"aethelgard-f0828.firebaseapp.com",databaseURL:"https://aethelgard-f0828-default-rtdb.firebaseio.com",projectId:"aethelgard-f0828",storageBucket:"aethelgard-f0828.firebasestorage.app",messagingSenderId:"501726848128",appId:"1:501726848128:web:adae851f62445d3c36b265"};
 const PROXY_URL="https://aethelgard-proxy.nathan13mcclelland.workers.dev";
 const SYSTEM_PROMPT=`You are the Dungeon Master for "Aethelgard: Storm of the Dragon," a D&D 5e campaign on a Norse-inspired island. Grimdark-but-grounded, theater of the mind. NPCs are real people with opinions.
+
+TONE — THIS IS AN ADULT GAME (18+):
+- Write with vivid, visceral detail. Describe the crack of bone, the stench of rot, the wet sound of a blade entering flesh. Do not sanitize violence.
+- Gore and injury should be described honestly. When a character takes an axe to the shoulder, describe the wound — torn muscle, exposed bone, blood soaking through leather.
+- NPCs swear, threaten, beg, and betray. They are desperate people in a desperate world. They lie. They steal. Some are cruel. Some are broken.
+- Death is ugly. Describe dying enemies choking, crawling, pleading. Describe dead bodies frozen in the snow, bloated corpses in the ruins, the smell of battlefields.
+- The world is harsh. Hunger gnaws. Cold kills. Disease spreads. People suffer and the gods are silent.
+- Emotional scenes should hit hard. Grief, rage, betrayal, loss — lean into these. Make the players feel the weight of what's happening.
+- Horror is welcome. The fey are alien and wrong. The undead are grotesque. The dragon is a force of nature that makes mortals feel like insects. Describe dread, unease, wrongness.
+- Addiction, corruption, madness, moral compromise — these are themes in this world. The Ormhjarta corrupts. Power has a price.
+- Do NOT censor or soften the world. If a village was slaughtered, describe what the party finds. If an NPC is tortured, don't fade to black.
+- That said, keep it tasteful — graphic violence and dark themes yes, but maintain literary quality. Think Joe Abercrombie, George R.R. Martin, The Witcher. Brutal but well-written.
 WORLD: Aethelgard, remote island, ~5000 people, Norse culture. Gods: Thunraz (storms), Hælfesta (hearth), Siglvætr (sea). Druids worship Silvanus.
-LOCATIONS: Járnhavn (iron capital, north). Vollhaven (central crossroads). Warmsprings (hot springs, south of Vollhaven). Baile Draighean (southern frontier). Grandmother's Wood (fey forest, NW interior). Grove of Gwynneth (druid sanctuary, south peninsula). Lochvarn (destroyed, east Mirror Lake). Skógheim (lumber village). Coastal Caves (west coast). Chapel of Quiet Rest (north foothills). God's Reach (western mountain, dragon lair). Ruined City/Kohr'borg (hidden, west Mirror Lake). Seálad Thair (pocket dimension, base of God's Reach).
-KEY NPCs: Elara Meadowlight (innkeeper Vollhaven). Anya Stonehand (dwarf commander). Zephyr (tiefling, Shadow Market). Cog Thornwrench (goblin artificer). Sigurd (archivist). Grandmother Moira (archdruid). Father Kaelen (priest, unknowingly serves Valerius). Valerius (lich). Brick Hagen (half-orc pugilist). Thordak Ironbrow (master smith).
-DM RULES: Roll dice [d20+mod = result vs DC X]. Under 300 words unless major scene. NPCs have personality. Ask "What do you do?" When party discovers a new location, include [DISCOVER:location_id] in response. Valid IDs: jarnhavn, skogheim, lochvarn, mirror_lake, vollhaven, warmsprings, baile_draighean, gwynneth, grandmothers_wood, sealad_thair, temple_quiet_rest, ruined_city, coastal_cave, gods_reach, cogs_workshop.
+LOCATIONS: Járnhavn (iron capital, north). Vollhaven (central crossroads). Warmsprings (hot springs, south of Vollhaven). Baile Draighean (southern frontier, goblin raids). Grandmother's Wood (fey forest, NW interior). Grove of Gwynneth (druid sanctuary, south peninsula). Lochvarn (destroyed by a catastrophic storm, east Mirror Lake). Skógheim (lumber village). Coastal Caves (west coast). Chapel of Quiet Rest (north foothills). God's Reach (western mountains, perpetual storms at peak).
+
+WHAT EVERYONE ON THE ISLAND KNOWS:
+- Lochvarn was destroyed by a terrible storm — unnatural, violent, like nothing in living memory
+- Refugees are flooding south toward Vollhaven
+- The Jarl's Council in Járnhavn is struggling to maintain order
+- Goblin raids plague Baile Draighean and the southern settlements
+- The Shadow Market operates in Járnhavn's underbelly — smugglers, fences, information brokers
+- Grandmother's Wood is dangerous and fey-haunted — most people avoid it
+- Strange weather has been increasing across the island
+- Elara Meadowlight's father Aldric went missing 2 years ago — she still searches for answers
+
+KEY NPCs: Elara Meadowlight (innkeeper Vollhaven, warm but grieving). Anya Stonehand (dwarf commander, Járnhavn, blunt and principled). Zephyr (tiefling, Shadow Market lieutenant, pragmatic). Cog Thornwrench (goblin artificer, NE of Baile Draighean, brilliant and rude). Sigurd (archivist, Járnhavn, obsessive scholar). Grandmother Moira (archdruid, Grove of Gwynneth). Father Kaelen (priest, Chapel of Quiet Rest, gentle and devoted). Brick Hagen (half-orc pugilist, Járnhavn). Thordak Ironbrow (master smith, Járnhavn).
+
+SECRET LORE — DO NOT REVEAL UNLESS PLAYERS DISCOVER IT THROUGH GAMEPLAY:
+- The storm that destroyed Lochvarn was actually a dragon attack by Ushathen, an ancient blue dragon nesting at the peaks of God's Reach. NOBODY knows this yet. There is no dragon cult. There are no dragon worshippers. Nobody on the island knows the dragon exists.
+- Valerius is a lich enslaved by the Ormhjarta artifact, trapped in the Ruined City (Kohr'borg) hidden by illusion on Mirror Lake's west shore. 
+- Father Kaelen unknowingly channels Valerius's power, not the dead god Nergal.
+- The Ormhjarta is a crystalline artifact hidden in Seálad Thair (a pocket dimension at God's Reach base).
+- Stone circles (Fainne Sithe) are a teleportation network built by the extinct Vethren.
+- The quest to find these secrets goes: Aldric's journal → Cog Thornwrench → Seer's Lens (6 components) → Seálad Thair → Ormhjarta → eventually confront Ushathen.
+- This is a SLOW BURN. The dragon is an endgame threat revealed over many sessions. Early sessions should focus on survival, reaching Vollhaven, the goblin problem, the Jarl vs Shadow Market tension, and natural dangers.
+
+CAMPAIGN PACING — CRITICAL:
+- DO NOT invent cults, dragon servants, dark acolytes, or any organization serving the dragon. None exist.
+- DO NOT reveal the dragon's existence early. The party should piece it together over time through clues — unnatural storms, scorched earth patterns, ancient texts, NPC rumors that don't quite add up.
+- Early encounters should be: bandits, desperate refugees, wild animals (wolves, bears), goblins, harsh weather, starvation, the fey, undead near the Chapel. Mundane and natural threats.
+- The world's dangers are ORDINARY at first — cold, hunger, hostile people, wild beasts. The supernatural horror creeps in slowly.
+- Let the players DISCOVER the plot. Don't hand them a quest marker pointing at the dragon. Let them follow Aldric's trail, hear rumors, find odd clues, and gradually realize something far worse than a storm destroyed their home.
+DM RULES — FOLLOW THE D&D 5e RULES STRICTLY:
+- Roll dice [d20+mod = result vs DC X]. Under 300 words unless major scene. NPCs have personality. Ask "What do you do?"
+- You are running a RULES-ACCURATE 5e game. Consult the 5e SRD for all rulings.
+
+5e MECHANICS TO ENFORCE:
+- Action economy: each character gets 1 action, 1 bonus action, 1 reaction, and movement per turn. No extra attacks unless class features grant them (e.g. Fighter Extra Attack at level 5).
+- Spell slots are LIMITED. Track them. When a caster uses a spell, mark it with [SPELL:CharName:SlotLevel] (e.g. [SPELL:Math-achu:1] uses a level 1 slot). If they have no slots left, the spell FAILS — tell them they're out.
+- Cantrips are free and unlimited. Leveled spells cost slots. Know the difference.
+- Spell components matter. If a spell requires material components worth gold, the caster needs them.
+- Concentration: only one concentration spell at a time. Taking damage forces a CON save (DC 10 or half damage, whichever is higher) or the spell drops.
+- Short rest: spend hit dice to heal, recover some class features (Warlock slots, Fighter Second Wind, etc.)
+- Long rest: restore ALL HP, restore ALL spell slots, reset hit dice (half level, minimum 1). Requires 8 hours in a safe location.
+- Opportunity attacks: moving out of an enemy's reach without Disengaging provokes an attack.
+- Cover: half cover = +2 AC, three-quarters = +5 AC.
+- Advantage/disadvantage: roll 2d20, take higher/lower. Don't stack — one instance is enough.
+- Death saves: at 0 HP, roll d20 each turn. 10+ = success, 9- = failure. Three failures = death. Three successes = stable at 0 HP. Natural 20 = regain 1 HP. Natural 1 = two failures.
+- Exhaustion levels stack and are brutal. Track them.
+- Proficiency bonus by level: Lv1-4 = +2, Lv5-8 = +3, Lv9-12 = +4.
+- Saving throws: each class is proficient in two saves. Apply proficiency bonus to those.
+- Skill checks use ability mod + proficiency (if proficient). Don't let players roll for things that should be automatic or impossible.
+- RACIAL TRAITS MATTER. Enforce them: Dwarves have poison resistance and darkvision. Elves can't be put to sleep and have darkvision. Half-Orcs drop to 1 HP instead of 0 once per long rest (Relentless Endurance). Goliaths can reduce damage with Stone's Endurance. Goblins can Disengage or Hide as a bonus action (Nimble Escape). Firbolgs can turn invisible (Hidden Step). Halflings reroll natural 1s on attacks/saves/checks (Lucky). Tieflings have fire resistance. Aasimar have healing hands and celestial resistance. Always apply the character's racial abilities when relevant.
+
+SURVIVAL — THE WORLD WILL KILL YOU IF YOU DON'T RESPECT IT:
+- Track food and water. Each character needs 1 lb food and 1 gallon water per day. In winter or hot weather, double water.
+- If a character hasn't eaten in a day, note it. After 3 days without food: [CONDITION:CharName:Starving] and 1 level of exhaustion per day after. After 1 day without water in harsh conditions: exhaustion stacks fast.
+- Use [TAKE] to consume rations when characters eat. If they have no food, they don't eat — describe the hunger gnawing at them.
+- Foraging requires a Survival check. DC 10 in forest, DC 14 on plains, DC 16 in mountains, +5 in winter. Foraging takes time — it's not free.
+- Hunting takes even longer. Tracking, stalking, killing, butchering. A successful hunt might feed the party for days, but it takes hours and makes noise.
+- Sleep deprivation causes exhaustion. No safe place to sleep = no long rest. Sleeping in the open in winter without shelter = CON save DC 12 or gain exhaustion.
+- Hypothermia is real. Extended cold exposure without proper gear: CON saves every hour, escalating DC. Failure = exhaustion stacking toward death.
+- Exhaustion is the silent killer. Level 1: disadvantage on ability checks. Level 2: speed halved. Level 3: disadvantage on attacks and saves. Level 4: HP max halved. Level 5: speed 0. Level 6: DEATH.
+
+THE LIVING WORLD — THINGS HAPPEN WHETHER THE PLAYERS CAUSE THEM OR NOT:
+- The environment reacts to the party. Butchering a deer attracts wolves. Camping near water draws predators at night. A fire in the dark draws attention — friendly or hostile.
+- Random encounters are real. When traveling or camping, roll for encounters. Not every stretch of road is safe. Bandits, wild animals, patrols, refugees, merchants, storms.
+- Animals behave like animals. Wolves circle, test for weakness, attack the smallest or wounded. Bears charge when surprised. Deer bolt. Crows follow death.
+- Weather changes. Storms roll in mid-travel. Fog obscures the path. Rain turns roads to mud and slows travel. Blizzards can be lethal.
+- NPCs have schedules and lives. Shops close. People sleep. The blacksmith is drunk some days. The inn might be full. The road might be washed out.
+- Night is dangerous. Traveling after dark without light = disadvantage on Perception, risk of ambush, risk of getting lost. Most people don't travel at night for good reason.
+- Sound carries. Combat, shouting, chopping wood — these attract things. The wilderness is listening.
+- Describe the environment constantly: the cold, the smell, the sounds, the light. Make the players FEEL where they are. Wet boots, numb fingers, the distant howl of something, smoke on the horizon, the taste of ash in the air.
+- Enemies FIGHT BACK. Every hostile creature attacks on its turn. Roll their attacks against player AC. If the attack hits, roll damage and apply it with [HP:CharName:-X].
+- Use real D&D 5e stat blocks. A wolf has +4 to hit and deals 2d4+2 damage. A bandit has +3 to hit, 1d6+1 damage. A goblin has +4 to hit, 1d6+2 damage. Don't invent weak enemies.
+- Show enemy attack rolls: "The wolf lunges at Math-achu [d20+4 = 17 vs AC 15 — HIT! 2d4+2 = 7 damage]"
+- Enemies act INTELLIGENTLY. They flank, target wounded characters, use cover, retreat when losing.
+- Multiple enemies attack in the same round. 3 wolves means 3 attack rolls against potentially different targets.
+- Death is real. Characters can go to 0 HP and start death saves. Don't pull punches.
+- The world is grimdark. Combat should feel desperate and dangerous, not heroic. Level 1 characters can die to wolves.
+- Environmental hazards deal damage: falling, fire, cold exposure, drowning. Use [HP] tags.
+- Failed saving throws have real consequences: poison deals ongoing damage, traps deal damage, falls break bones.
+- Do NOT skip enemy turns. Do NOT narrate combat as "you easily defeat them." Every fight should cost something — HP, supplies, time.
+- After combat, enemies might have loot. Use [GIVE] for anything the players search for and find.
+- Healing is scarce. Potions are rare. Rest requires safety. The party should feel resource pressure.
+
+INVENTORY & GAME STATE TAGS — USE THESE whenever items, gold, HP, or conditions change:
+- [GIVE:CharacterName:Item Name] — when a character finds, picks up, buys, or receives an item
+- [TAKE:CharacterName:Item Name] — when a character uses, drops, sells, loses, or breaks an item
+- [TRANSFER:FromCharacter:ToCharacter:Item Name] — when one character gives an item to another
+- [GOLD:CharacterName:+5] or [GOLD:CharacterName:-3] — when gold is gained or spent
+- [HP:CharacterName:-5] or [HP:CharacterName:+3] — when HP changes from damage, healing, etc.
+- [CONDITION:CharacterName:Poisoned] — when a condition is applied (Poisoned, Exhausted, Frightened, etc.)
+- [CLEAR:CharacterName:Poisoned] — when a condition is removed
+- [XP:CharacterName:+25] — when XP is earned
+- [SPELL:CharacterName:1] — when a leveled spell is cast (number = slot level used). ALWAYS use this when a caster uses a spell slot. If they have no slots remaining, tell them the spell fizzles and they're out of power.
+- [LONGREST:CharacterName] — when completing a long rest (restores HP and all spell slots, removes one exhaustion level). Requires 8 hours in a SAFE location. Deny long rests in dangerous areas.
+- [SHORTREST:CharacterName] — when completing a short rest (1 hour, spend hit dice, Warlock slots recover)
+- [DISCOVER:location_id] — when the party arrives at a new location
+
+IMPORTANT: Always use the CHARACTER NAME (e.g. Math-achu, not the player name Nathan). Place tags at the END of your response, after the narrative. Use [GIVE] whenever a character picks something up or receives something — the player's inventory updates automatically. Use [TAKE] when they use a consumable, give something away, or lose an item. Players CANNOT add items manually — you control all inventory through these tags.
+
 The current campaign date will be provided with each message. Reference seasons and weather naturally.`;
 
-const RACES=["Human","Dwarf","Elf","Half-Elf","Halfling","Gnome","Half-Orc","Tiefling","Goliath"];
+const RACES=["Human","Dwarf","Elf","Half-Elf","Halfling","Gnome","Half-Orc","Tiefling","Goliath","Goblin","Firbolg","Aasimar","Shifter","Changeling","Orc"];
+const RACE_INFO={
+  "Human":{traits:"Resourceful, Skillful, Versatile",bonus:"Flexible ability scores"},
+  "Dwarf":{traits:"Darkvision, Dwarven Resilience, Dwarven Toughness, Stonecunning",bonus:"+2 CON suggested"},
+  "Elf":{traits:"Darkvision, Elven Lineage, Fey Ancestry, Keen Senses, Trance",bonus:"+2 DEX suggested"},
+  "Half-Elf":{traits:"Darkvision, Fey Ancestry, Skill Versatility",bonus:"+2 CHA, +1 two others suggested"},
+  "Halfling":{traits:"Brave, Halfling Nimbleness, Luck, Naturally Stealthy",bonus:"+2 DEX suggested"},
+  "Gnome":{traits:"Darkvision, Gnomish Cunning, Gnomish Lineage",bonus:"+2 INT suggested"},
+  "Half-Orc":{traits:"Darkvision, Relentless Endurance, Savage Attacks",bonus:"+2 STR, +1 CON suggested"},
+  "Tiefling":{traits:"Darkvision, Fiendish Legacy, Otherworldly Presence",bonus:"+2 CHA suggested"},
+  "Goliath":{traits:"Giant Ancestry, Large Form, Powerful Build, Stone's Endurance",bonus:"+2 STR suggested"},
+  "Goblin":{traits:"Darkvision, Fey Ancestry, Fury of the Small, Nimble Escape",bonus:"+2 DEX suggested"},
+  "Firbolg":{traits:"Firbolg Magic, Hidden Step, Powerful Build, Speech of Beast and Leaf",bonus:"+2 WIS suggested"},
+  "Aasimar":{traits:"Celestial Resistance, Darkvision, Healing Hands, Light Bearer, Celestial Revelation",bonus:"+2 CHA suggested"},
+  "Shifter":{traits:"Bestial Instincts, Darkvision, Shifting",bonus:"+2 WIS or DEX suggested"},
+  "Changeling":{traits:"Changeling Instincts, Shapechanger",bonus:"+2 CHA suggested"},
+  "Orc":{traits:"Adrenaline Rush, Darkvision, Powerful Build, Relentless Endurance",bonus:"+2 STR suggested"}
+};
 const CLASSES=["Fighter","Rogue","Wizard","Cleric","Ranger","Barbarian","Bard","Paladin","Druid","Warlock","Monk","Pugilist"];
 const BACKGROUNDS=["Soldier","Sailor","Folk Hero","Outlander","Acolyte","Criminal","Artisan","Scholar","Entertainer","Hermit"];
 const MONTHS=[{n:1,name:"Frostmoot",s:"Deep Winter",c:"#4a6fa5",i:"❄️"},{n:2,name:"Stormveil",s:"Late Winter",c:"#5a7fb5",i:"🌊"},{n:3,name:"Seedwake",s:"Early Spring",c:"#6aaf6a",i:"🌱"},{n:4,name:"Bloomtide",s:"Spring",c:"#7cc47c",i:"🌸"},{n:5,name:"Brightsun",s:"Late Spring",c:"#c4cc54",i:"☀️"},{n:6,name:"Highflame",s:"Midsummer",c:"#e8a832",i:"🔥"},{n:7,name:"Goldreap",s:"Summer",c:"#e8c832",i:"🌾"},{n:8,name:"Longshadow",s:"Late Summer",c:"#d4a844",i:"🌅"},{n:9,name:"Harvestwane",s:"Autumn",c:"#c47834",i:"🍂"},{n:10,name:"Duskmire",s:"Late Autumn",c:"#8a6a4a",i:"🌫️"},{n:11,name:"Greyveil",s:"Early Winter",c:"#6a7a8a",i:"🌧️"},{n:12,name:"Hearthrest",s:"Winter",c:"#3a5a7a",i:"🕯️"}];
@@ -135,7 +264,7 @@ const HOLY=[{m:1,d:1,name:"New Year's Blessing",g:"All Three",desc:"Offerings",c
 const WX={"Deep Winter":["Heavy snow","Blizzard","Bitter cold","Freezing rain","Grey"],"Late Winter":["Snow flurries","Sleet","Cold rain","Fog","Wind"],"Early Spring":["Cold rain","Frost","Warming breeze","Mud","Patchy sun"],"Spring":["Warm rain","Clear","Gentle wind","Mist","Thundershowers"],"Late Spring":["Warm & bright","Clouds","Humid","Evening storms","Clear"],"Midsummer":["Hot & still","Scorching","Dry heat","Thunder","Balmy"],"Summer":["Golden","Breeze","Hazy","Occasional rain","Long twilight"],"Late Summer":["Cool nights","Harvest wind","Dew","Amber light","Dawn fog"],"Autumn":["Cool rain","Crisp air","Leaves falling","Frost","Overcast"],"Late Autumn":["Cold fog","First snow","Bitter wind","Dark skies","Freezing"],"Early Winter":["Grey skies","Snow showers","Ice rain","Short days","Howling wind"],"Winter":["Deep snow","Clear & cold","Ice storms","Firelight","Still air"]};
 const SPELL_SLOTS={2:{1:2},3:{1:3},4:{1:3},5:{1:4,2:2},6:{1:4,2:2},7:{1:4,2:3},8:{1:4,2:3},9:{1:4,2:3,3:2}};
 const CASTER_CLASSES=["Wizard","Cleric","Druid","Bard","Paladin","Warlock","Ranger"];
-const LOCATIONS={jarnhavn:{name:"Járnhavn",type:"town",x:33,y:23,desc:"The Iron Harbor. Capital, ~2000 souls."},skogheim:{name:"Skógheim",type:"town",x:34,y:7,desc:"Lumber village at forest edge."},lochvarn:{name:"Lochvarn",type:"dungeon",x:49,y:25,desc:"Ruins. Destroyed by Ushathen's storm."},mirror_lake:{name:"Mirror Lake",type:"wilderness",x:42,y:28,desc:"Eerily still lake."},vollhaven:{name:"Vollhaven",type:"town",x:44,y:47,desc:"Central crossroads. Elara's inn."},warmsprings:{name:"Warmsprings",type:"poi",x:44,y:44,desc:"Hot springs. Neutral ground."},baile_draighean:{name:"Baile Draighean",type:"town",x:36,y:66,desc:"Southern frontier. Goblin raids."},gwynneth:{name:"Grove of Gwynneth",type:"wilderness",x:37,y:80,desc:"Druid sanctuary."},grandmothers_wood:{name:"Grandmother's Wood",type:"wilderness",x:28,y:10,desc:"Ancient fey forest."},sealad_thair:{name:"Seálad Thair",type:"secret",x:30,y:36,desc:"Hidden pocket dimension."},temple_quiet_rest:{name:"Chapel of Quiet Rest",type:"secret",x:39,y:12,desc:"Father Kaelen's chapel."},ruined_city:{name:"Ruined City",type:"secret",x:41,y:28,desc:"Kohr'borg. Valerius dwells here."},coastal_cave:{name:"Coastal Caves",type:"dungeon",x:43,y:35,desc:"Old iron glass mines."},gods_reach:{name:"God's Reach",type:"secret",x:31,y:29,desc:"Tallest mountains. Storm-shrouded."},cogs_workshop:{name:"Cog's Workshop",type:"secret",x:38,y:60,desc:"Goblin artificer's barn."}};
+const LOCATIONS={jarnhavn:{name:"Járnhavn",type:"town",x:33.3,y:24.1,desc:"The Iron Harbor. Capital, ~2000 souls."},skogheim:{name:"Skógheim",type:"town",x:33.9,y:6.5,desc:"Lumber village at forest edge."},lochvarn:{name:"Lochvarn",type:"dungeon",x:45.3,y:25.1,desc:"Ruins. Destroyed by Ushathen's storm."},mirror_lake:{name:"Mirror Lake",type:"wilderness",x:41.1,y:29.1,desc:"Eerily still lake."},vollhaven:{name:"Vollhaven",type:"town",x:42.7,y:47.1,desc:"Central crossroads. Elara's inn."},warmsprings:{name:"Warmsprings",type:"poi",x:42.2,y:49.1,desc:"Hot springs. Neutral ground."},baile_draighean:{name:"Baile Draighean",type:"town",x:34.4,y:68.2,desc:"Southern frontier. Goblin raids."},gwynneth:{name:"Grove of Gwynneth",type:"wilderness",x:36.5,y:83.2,desc:"Druid sanctuary."},grandmothers_wood:{name:"Grandmother's Wood",type:"wilderness",x:21.9,y:12.0,desc:"Ancient fey forest."},sealad_thair:{name:"Seálad Thair",type:"secret",x:23.4,y:37.1,desc:"Hidden pocket dimension."},temple_quiet_rest:{name:"Chapel of Quiet Rest",type:"secret",x:40.1,y:13.5,desc:"Father Kaelen's chapel."},ruined_city:{name:"Ruined City",type:"secret",x:45.3,y:28.6,desc:"Kohr'borg. Valerius dwells here."},coastal_cave:{name:"Coastal Caves",type:"dungeon",x:43.5,y:36.1,desc:"Old iron glass mines."},gods_reach:{name:"God's Reach",type:"secret",x:27.6,y:30.1,desc:"Tallest mountains. Storm-shrouded."},cogs_workshop:{name:"Cog's Workshop",type:"secret",x:39.6,y:56.2,desc:"Goblin artificer's barn."}};
 
 let db;try{firebase.initializeApp(firebaseConfig);db=firebase.database()}catch(e){document.getElementById('app').innerHTML='<div class="center"><div class="panel"><p style="color:#c87a6a;text-align:center">Firebase error</p></div></div>';throw e}
 let S={phase:"join",pn:"",game:null,narr:null,loading:false,act:"",tab:"story",selLoc:null,mapZ:1,mapX:0,mapY:0,mapLoaded:false},CF={name:"",race:"Human",cls:"Fighter",bg:"Outlander",desc:"",str:"10",dex:"10",con:"10",int:"10",wis:"10",cha:"10"},LP="";
@@ -147,6 +276,105 @@ function getHp(c){return({Barbarian:14,Wizard:8,Fighter:12,Paladin:12,Pugilist:1
 function getAc(c){return({Barbarian:13,Wizard:11,Monk:13,Pugilist:13})[c]||14}
 function scrollN(){setTimeout(()=>{const e=document.getElementById('narr-end');if(e)e.scrollIntoView({behavior:'smooth'})},100)}
 function processDiscovers(text){const re=/\[DISCOVER:(\w+)\]/g;let m;while((m=re.exec(text))!==null){const id=m[1];if(LOCATIONS[id]&&!revealed.has(id))db.ref('revealed').push(id)}}
+
+async function processGameTags(text,game){
+  if(!game?.players)return[];
+  const notifications=[];
+  const players=game.players;
+  // Helper: find player key by character name
+  function findPlayer(cn){for(const[k,v]of Object.entries(players)){if(v.ch&&v.ch.cn.toLowerCase()===cn.toLowerCase())return k}return null}
+  
+  // [GIVE:CharName:Item]
+  const giveRe=/\[GIVE:([^:]+):([^\]]+)\]/g;let m;
+  while((m=giveRe.exec(text))!==null){const pk=findPlayer(m[1].trim());if(!pk)continue;
+    const item=m[2].trim();const ch=players[pk].ch;if(!ch.inv)ch.inv=[];ch.inv.push(item);
+    await fbS(`game/players/${pk}/ch/inv`,ch.inv);notifications.push({t:"inv",text:`📦 ${esc(ch.cn)} received ${esc(item)}`})}
+  
+  // [TAKE:CharName:Item]
+  const takeRe=/\[TAKE:([^:]+):([^\]]+)\]/g;
+  while((m=takeRe.exec(text))!==null){const pk=findPlayer(m[1].trim());if(!pk)continue;
+    const item=m[2].trim().toLowerCase();const ch=players[pk].ch;if(!ch.inv)continue;
+    const idx=ch.inv.findIndex(i=>i.toLowerCase()===item||i.toLowerCase().includes(item));
+    if(idx>=0){const removed=ch.inv.splice(idx,1)[0];await fbS(`game/players/${pk}/ch/inv`,ch.inv);
+      notifications.push({t:"inv",text:`📤 ${esc(ch.cn)} lost ${esc(removed)}`})}}
+  
+  // [TRANSFER:From:To:Item]
+  const transRe=/\[TRANSFER:([^:]+):([^:]+):([^\]]+)\]/g;
+  while((m=transRe.exec(text))!==null){const fk=findPlayer(m[1].trim()),tk=findPlayer(m[2].trim());if(!fk||!tk)continue;
+    const item=m[3].trim().toLowerCase();const fc=players[fk].ch,tc=players[tk].ch;
+    if(!fc.inv)continue;const idx=fc.inv.findIndex(i=>i.toLowerCase()===item||i.toLowerCase().includes(item));
+    if(idx>=0){const moved=fc.inv.splice(idx,1)[0];if(!tc.inv)tc.inv=[];tc.inv.push(moved);
+      await fbS(`game/players/${fk}/ch/inv`,fc.inv);await fbS(`game/players/${tk}/ch/inv`,tc.inv);
+      notifications.push({t:"inv",text:`🔄 ${esc(fc.cn)} gave ${esc(moved)} to ${esc(tc.cn)}`})}}
+  
+  // [GOLD:CharName:+/-N]
+  const goldRe=/\[GOLD:([^:]+):([+-]?\d+)\]/g;
+  while((m=goldRe.exec(text))!==null){const pk=findPlayer(m[1].trim());if(!pk)continue;
+    const amt=parseInt(m[2]);const ch=players[pk].ch;ch.gold=Math.max(0,(ch.gold||0)+amt);
+    await fbS(`game/players/${pk}/ch/gold`,ch.gold);
+    notifications.push({t:"inv",text:`${amt>0?'💰':'💸'} ${esc(ch.cn)} ${amt>0?'gained':'lost'} ${Math.abs(amt)} gold (${ch.gold} total)`})}
+  
+  // [HP:CharName:+/-N]
+  const hpRe=/\[HP:([^:]+):([+-]?\d+)\]/g;
+  while((m=hpRe.exec(text))!==null){const pk=findPlayer(m[1].trim());if(!pk)continue;
+    const amt=parseInt(m[2]);const ch=players[pk].ch;ch.hp=Math.max(0,Math.min(ch.mhp,ch.hp+amt));
+    await fbS(`game/players/${pk}/ch/hp`,ch.hp);
+    notifications.push({t:"inv",text:`${amt>0?'💚':'💔'} ${esc(ch.cn)} ${amt>0?'healed':'took'} ${Math.abs(amt)} HP (${ch.hp}/${ch.mhp})`})}
+  
+  // [CONDITION:CharName:Condition]
+  const condRe=/\[CONDITION:([^:]+):([^\]]+)\]/g;
+  while((m=condRe.exec(text))!==null){const pk=findPlayer(m[1].trim());if(!pk)continue;
+    const cond=m[2].trim();const ch=players[pk].ch;if(!ch.conditions)ch.conditions=[];
+    if(!ch.conditions.includes(cond)){ch.conditions.push(cond);await fbS(`game/players/${pk}/ch/conditions`,ch.conditions);
+      notifications.push({t:"inv",text:`⚠ ${esc(ch.cn)} is now ${esc(cond)}`})}}
+  
+  // [CLEAR:CharName:Condition]
+  const clearRe=/\[CLEAR:([^:]+):([^\]]+)\]/g;
+  while((m=clearRe.exec(text))!==null){const pk=findPlayer(m[1].trim());if(!pk)continue;
+    const cond=m[2].trim();const ch=players[pk].ch;if(!ch.conditions)continue;
+    const ci=ch.conditions.indexOf(cond);if(ci>=0){ch.conditions.splice(ci,1);
+      await fbS(`game/players/${pk}/ch/conditions`,ch.conditions);
+      notifications.push({t:"inv",text:`✅ ${esc(ch.cn)} is no longer ${esc(cond)}`})}}
+  
+  // [XP:CharName:+N]
+  const xpRe=/\[XP:([^:]+):([+-]?\d+)\]/g;
+  while((m=xpRe.exec(text))!==null){const pk=findPlayer(m[1].trim());if(!pk)continue;
+    const amt=parseInt(m[2]);const ch=players[pk].ch;ch.xp=(ch.xp||0)+amt;
+    await fbS(`game/players/${pk}/ch/xp`,ch.xp);
+    notifications.push({t:"inv",text:`⭐ ${esc(ch.cn)} gained ${amt} XP (${ch.xp} total)`})}
+  
+  // [SPELL:CharName:SlotLevel] — expend a spell slot
+  const spellRe=/\[SPELL:([^:]+):(\d+)\]/g;
+  while((m=spellRe.exec(text))!==null){const pk=findPlayer(m[1].trim());if(!pk)continue;
+    const slotLv=parseInt(m[2]);const ch=players[pk].ch;
+    if(!ch.ssu)ch.ssu={};const max=(SPELL_SLOTS[Math.min(ch.lv||1,9)]||{})[slotLv]||0;
+    const used=(ch.ssu[slotLv]||0);
+    if(used<max){ch.ssu[slotLv]=used+1;await fbS(`game/players/${pk}/ch/ssu`,ch.ssu);
+      notifications.push({t:"inv",text:`🔮 ${esc(ch.cn)} used a level ${slotLv} spell slot (${ch.ssu[slotLv]}/${max} used)`})}
+    else{notifications.push({t:"inv",text:`⛔ ${esc(ch.cn)} has no level ${slotLv} slots remaining!`})}}
+  
+  // [LONGREST:CharName] — full rest, restore HP and all spell slots
+  const lrRe=/\[LONGREST:([^\]]+)\]/g;
+  while((m=lrRe.exec(text))!==null){const pk=findPlayer(m[1].trim());if(!pk)continue;
+    const ch=players[pk].ch;ch.hp=ch.mhp;ch.ssu={};
+    // Remove exhaustion by 1 level if tracked
+    if(ch.conditions){const exIdx=ch.conditions.findIndex(c=>c.toLowerCase().includes('exhaust'));
+      if(exIdx>=0)ch.conditions.splice(exIdx,1)}
+    await fbS(`game/players/${pk}/ch`,ch);
+    notifications.push({t:"inv",text:`🌙 ${esc(ch.cn)} completed a long rest — HP and spell slots restored`})}
+  
+  // [SHORTREST:CharName] — short rest
+  const srRe=/\[SHORTREST:([^\]]+)\]/g;
+  while((m=srRe.exec(text))!==null){const pk=findPlayer(m[1].trim());if(!pk)continue;
+    const ch=players[pk].ch;
+    // Warlocks recover slots on short rest
+    if(ch.cls==='Warlock'){ch.ssu={};await fbS(`game/players/${pk}/ch/ssu`,ch.ssu)}
+    notifications.push({t:"inv",text:`☕ ${esc(ch.cn)} completed a short rest`})}
+  
+  // Discovers
+  processDiscovers(text);
+  return notifications;
+}
 
 async function callDM(msgs,cal){
   const cs=cal?`\n[Date: Day ${cal.day} of ${MONTHS[(cal.month||4)-1].name} (${MONTHS[(cal.month||4)-1].s}). Campaign day ${cal.de||0}.]`:'';
@@ -182,8 +410,10 @@ async function startGame(){const g=await fbG('game');const rdy=Object.entries(g.
   const cl=rdy.map(p=>{const c=g.players[p].ch;return`${c.cn} (${c.race} ${c.cls}, ${c.bg}) — player:${p}. ${c.desc||""}`}).join("\n");
   const prompt=`Campaign begins.\nCharacters:\n${cl}\n\nSurvivors of Lochvarn on road south. Set opening scene, prompt ${g.players[rdy[0]].ch.cn} to act.`;
   S.loading=true;render();const resp=await callDM([{role:"user",content:prompt}],g.cal);
-  processDiscovers(resp);const clean=resp.replace(/\[DISCOVER:\w+\]/g,'').trim();
-  await fbS('narrative',{entries:[{t:"system",text:"⚔ The campaign begins. ⚔"},{t:"dm",text:clean}],conv:[{role:"user",content:prompt},{role:"assistant",content:clean}]});
+  const gFresh=await fbG('game');const notifs=await processGameTags(resp,gFresh);
+  const clean=resp.replace(/\[(GIVE|TAKE|TRANSFER|GOLD|HP|CONDITION|CLEAR|XP|DISCOVER|SPELL|LONGREST|SHORTREST):[^\]]*\]/g,'').trim();
+  const entries=[{t:"system",text:"⚔ The campaign begins. ⚔"},{t:"dm",text:clean},...notifs];
+  await fbS('narrative',{entries,conv:[{role:"user",content:prompt},{role:"assistant",content:clean}]});
   S.loading=false;S.phase="play";render()}
 
 async function submitAction(){const a=S.act.trim();if(!a||S.loading)return;const g=await fbG('game');
@@ -199,12 +429,16 @@ async function submitAction(){const a=S.act.trim();if(!a||S.loading)return;const
   await fbS('narrative',nr);S.loading=true;render();
   const ni=to.length>1?(((g.currentTurn||0)+1)%to.length):0;
   const nc=to.length>1?(g.players[to[ni]]?.ch?.cn||'next'):ch.cn;
-  const pm=`[${ch.cn} (${ch.race} ${ch.cls}, HP${ch.hp}/${ch.mhp}, AC${ch.ac})]\n${ch.cn}: ${a}${dn}\nResolve, then prompt ${nc}.`;
+  const raceTraits=RACE_INFO[ch.race]?', Race:'+ch.race+'('+RACE_INFO[ch.race].traits+')':'';
+  const slotInfo=CASTER_CLASSES.includes(ch.cls)?(() => {const slots=SPELL_SLOTS[Math.min(ch.lv||1,9)]||{};const parts=[];for(const[lv,max]of Object.entries(slots)){const used=(ch.ssu||{})[lv]||0;parts.push(`Lv${lv}:${max-used}/${max}`)}return parts.length?', Slots:'+parts.join(' '):''})():'';
+  const condInfo=(ch.conditions||[]).length?', Conditions:'+ch.conditions.join('/'):'';
+  const pm=`[${ch.cn} (${ch.race} ${ch.cls}, Lv${ch.lv}, HP${ch.hp}/${ch.mhp}, AC${ch.ac}, Gold:${ch.gold||0}${raceTraits}${slotInfo}${condInfo}, Inventory:${(ch.inv||[]).join(', ')||'nothing'})]\n${ch.cn}: ${a}${dn}\nResolve, then prompt ${nc}. Use inventory tags for any item/gold/HP changes. Use [SPELL] when spells are cast. Apply racial traits when relevant.`;
   const cv=[...(nr.conv||[]),{role:"user",content:pm}];const tr=cv.length>40?cv.slice(-40):cv;
   const resp=await callDM(tr,g.cal);
   await fbS('game/currentTurn',ni);
-  processDiscovers(resp);const clean=resp.replace(/\[DISCOVER:\w+\]/g,'').trim();
-  nr.entries.push({t:"dm",text:clean});nr.conv=[...tr,{role:"assistant",content:clean}];
+  const gFresh=await fbG('game');const notifs=await processGameTags(resp,gFresh);
+  const clean=resp.replace(/\[(GIVE|TAKE|TRANSFER|GOLD|HP|CONDITION|CLEAR|XP|DISCOVER|SPELL|LONGREST|SHORTREST):[^\]]*\]/g,'').trim();
+  nr.entries.push({t:"dm",text:clean},...notifs);nr.conv=[...tr,{role:"assistant",content:clean}];
   await fbS('narrative',nr);S.loading=false;render()}
 
 async function resetGame(){if(!confirm("Delete entire campaign?"))return;await fbS('game',null);await fbS('narrative',null);await fbS('revealed',null);
@@ -258,7 +492,7 @@ async function longRest(p){const g=await fbG('game');const c=g.players[p].ch;c.h
 async function saveNotes(p){const t=document.getElementById('chNotes');if(t)await fbS(`game/players/${p}/ch/notes`,t.value)}
 function rSheet(p){const g=S.game;if(!g?.players?.[p]?.ch)return;const c=g.players[p].ch;const own=p===LP;
   const hpPct=Math.max(0,Math.min(100,(c.hp/c.mhp)*100));const hpC=c.hp<=c.mhp*.25?'#c87a6a':c.hp<=c.mhp*.5?'#e8a832':'#6aaf6a';
-  let h=`<div style="text-align:center;margin-bottom:12px"><div style="font-size:18px;color:#c8a96e;font-weight:700;font-family:Cinzel,serif">${esc(c.cn)}</div><div style="font-size:13px;color:#8a8070">${c.race} ${c.cls} (${c.bg}) · Lv ${c.lv}</div></div>`;
+  let h=`<div style="text-align:center;margin-bottom:12px"><div style="font-size:18px;color:#c8a96e;font-weight:700;font-family:Cinzel,serif">${esc(c.cn)}</div><div style="font-size:13px;color:#8a8070">${c.race} ${c.cls} (${c.bg}) · Lv ${c.lv}</div>${RACE_INFO[c.race]?`<div style="font-size:10px;color:#6aaf6a;margin-top:4px">${RACE_INFO[c.race].traits}</div>`:''}</div>`;
   h+=`<div class="sheet-section"><h3>HIT POINTS</h3><div style="background:#1e1e30;border-radius:6px;height:24px;margin-bottom:6px;overflow:hidden"><div style="background:${hpC};height:100%;width:${hpPct}%;border-radius:6px"></div></div>`;
   h+=`<div style="display:flex;justify-content:center;align-items:center;gap:8px">${own?`<button class="btn-sm" onclick="updateCF('${p}','hp',Math.max(0,${c.hp}-1))">−</button>`:''}<span style="font-size:20px;font-weight:700;color:${hpC}">${c.hp}/${c.mhp}</span>${own?`<button class="btn-sm" onclick="updateCF('${p}','hp',Math.min(${c.mhp},${c.hp}+1))">+</button>`:''}</div>`;
   h+=`<div style="text-align:center;font-size:12px;color:#8a8070;margin-top:4px">AC ${c.ac}</div>`;
@@ -268,7 +502,14 @@ function rSheet(p){const g=S.game;if(!g?.players?.[p]?.ch)return;const c=g.playe
   h+=`<div class="sheet-section"><h3>GOLD</h3><div style="display:flex;justify-content:center;align-items:center;gap:8px">${own?`<button class="btn-sm" onclick="updateCF('${p}','gold',Math.max(0,${c.gold||0}-1))">−</button>`:''}<span style="font-size:20px;font-weight:700;color:#e8c832">${c.gold||0} gp</span>${own?`<button class="btn-sm" onclick="updateCF('${p}','gold',${(c.gold||0)+1})">+</button>`:''}</div></div>`;
   if(c.lv>=2&&CASTER_CLASSES.includes(c.cls)){const slots=SPELL_SLOTS[Math.min(c.lv,9)]||{};h+=`<div class="sheet-section"><h3>SPELL SLOTS</h3>`;for(let lv=1;lv<=5;lv++){const mx=slots[lv];if(!mx)continue;const used=(c.ssu||{})[lv]||0;h+=`<div class="sheet-row"><span class="lbl">Level ${lv}</span><span>`;for(let i=0;i<mx;i++)h+=`<span class="slot-pip ${i<used?'used':'available'}" onclick="${own?`toggleSlot('${p}',${lv})`:''}"></span>`;h+=`</span></div>`}h+=`</div>`}
   h+=`<div class="sheet-section"><h3>SPELLS</h3>`;(c.spells||[]).forEach((s,i)=>{h+=`<div class="inv-item"><span>${esc(s)}</span>${own?`<span class="del" onclick="rmSpell('${p}',${i})">✕</span>`:''}</div>`});if(own)h+=`<div class="inv-add"><input type="text" id="spIn" placeholder="Add spell..." onkeydown="if(event.key==='Enter')addSpell('${p}')"><button class="btn-sm" onclick="addSpell('${p}')">+</button></div>`;h+=`</div>`;
-  h+=`<div class="sheet-section"><h3>INVENTORY</h3>`;(c.inv||[]).forEach((item,i)=>{h+=`<div class="inv-item"><span>${esc(item)}</span>${own?`<span class="del" onclick="rmInv('${p}',${i})">✕</span>`:''}</div>`});if(own)h+=`<div class="inv-add"><input type="text" id="invIn" placeholder="Add item..." onkeydown="if(event.key==='Enter')addInv('${p}')"><button class="btn-sm" onclick="addInv('${p}')">+</button></div>`;h+=`</div>`;
+  h+=`<div class="sheet-section"><h3>INVENTORY</h3>`;
+  if((c.inv||[]).length){(c.inv||[]).forEach(item=>{h+=`<div class="inv-item"><span>${esc(item)}</span></div>`})}
+  else{h+=`<div style="font-size:12px;color:#5a5045;font-style:italic">No items — find them in the world!</div>`}
+  h+=`<div style="font-size:10px;color:#4a4540;margin-top:6px;font-style:italic">Items are managed by the DM through gameplay</div></div>`;
+  if((c.conditions||[]).length){h+=`<div class="sheet-section"><h3>CONDITIONS</h3><div style="display:flex;flex-wrap:wrap;gap:4px">`;
+    (c.conditions||[]).forEach(cond=>{const neg=['Poisoned','Exhausted','Frightened','Paralyzed','Stunned','Blinded','Deafened','Charmed','Petrified','Unconscious','Prone','Restrained','Incapacitated','Grappled'].some(n=>cond.toLowerCase().includes(n.toLowerCase()));
+      h+=`<span class="condition-badge ${neg?'negative':'positive'}">${esc(cond)}</span>`});h+=`</div></div>`}
+  if(c.xp){h+=`<div class="sheet-section"><h3>EXPERIENCE</h3><div style="text-align:center;font-size:18px;color:#c8a96e;font-weight:700">${c.xp} XP</div><div style="text-align:center;font-size:11px;color:#8a8070">Level ${c.lv}</div></div>`}
   if(own)h+=`<div class="sheet-section"><h3>NOTES</h3><textarea id="chNotes" style="width:100%;min-height:80px;font-size:13px" onblur="saveNotes('${p}')">${esc(c.notes||'')}</textarea></div>`;
   if(revealed.size>0){h+=`<div class="sheet-section"><h3>DISCOVERED</h3>`;for(const id of revealed){const l=LOCATIONS[id];if(l)h+=`<div style="font-size:12px;color:#6aaf6a;padding:2px 0">◆ ${esc(l.name)}</div>`}h+=`</div>`}
   document.getElementById('sheetBody').innerHTML=h}
@@ -279,7 +520,7 @@ function closeAll(){document.getElementById('calPanel').classList.remove('open')
 
 function render(){const app=document.getElementById('app');const g=S.game;
 if(S.phase==="join"){app.innerHTML=`<div class="header"><h1 class="title">AETHELGARD</h1><div class="sub">STORM OF THE DRAGON</div></div><div class="center"><div class="panel"><label>Your Name</label><input type="text" id="nameIn" placeholder="e.g. Nathan" onkeydown="if(event.key==='Enter'){S.pn=this.value;if(S.pn.trim())document.getElementById('modeP').style.display='block'}"><div id="modeP" style="display:none;margin-top:16px"><div class="mode-card" onclick="S.pn=document.getElementById('nameIn').value;joinGame()"><div class="ico">🛡</div><h3>Multiplayer</h3><p>Create or join with friends</p></div><div class="mode-card" onclick="S.pn=document.getElementById('nameIn').value;startSolo()"><div class="ico">⚔</div><h3>Solo Adventure</h3><p>Play alone with the AI DM</p></div></div><div style="text-align:center;margin-top:12px"><button class="btn" onclick="S.pn=document.getElementById('nameIn').value;if(S.pn.trim())document.getElementById('modeP').style.display='block'">Continue</button></div></div></div>`;return}
-if(S.phase==="character"){app.innerHTML=`<div class="header"><h1 class="title">AETHELGARD</h1><div class="sub">CREATE YOUR CHARACTER</div></div><div class="center"><div class="panel" style="max-width:480px"><label>Character Name</label><input type="text" id="cN" value="${CF.name}" placeholder="e.g. Mörka"><label>Race</label><select id="cR">${RACES.map(r=>`<option ${r===CF.race?'selected':''}>${r}</option>`).join('')}</select><label>Class</label><select id="cC">${CLASSES.map(c=>`<option ${c===CF.cls?'selected':''}>${c}</option>`).join('')}</select><label>Background</label><select id="cB">${BACKGROUNDS.map(b=>`<option ${b===CF.bg?'selected':''}>${b}</option>`).join('')}</select><label>Ability Scores</label><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">${['str','dex','con','int','wis','cha'].map(s=>`<div><div style="font-size:10px;color:#8a8070;text-align:center">${s.toUpperCase()}</div><input type="number" id="c_${s}" value="${CF[s]}" min="1" max="20" style="text-align:center;font-size:16px"></div>`).join('')}</div><label>Description</label><textarea id="cD" placeholder="Appearance, personality...">${CF.desc}</textarea><div style="text-align:center"><button class="btn" onclick="CF.name=document.getElementById('cN').value;CF.race=document.getElementById('cR').value;CF.cls=document.getElementById('cC').value;CF.bg=document.getElementById('cB').value;CF.desc=document.getElementById('cD').value;['str','dex','con','int','wis','cha'].forEach(s=>CF[s]=document.getElementById('c_'+s).value);saveChar()">Create Character</button></div></div></div>`;return}
+if(S.phase==="character"){const ri=RACE_INFO[CF.race]||{traits:"",bonus:""};app.innerHTML=`<div class="header"><h1 class="title">AETHELGARD</h1><div class="sub">CREATE YOUR CHARACTER</div></div><div class="center"><div class="panel" style="max-width:480px"><label>Character Name</label><input type="text" id="cN" value="${CF.name}" placeholder="e.g. Mörka"><label>Race</label><select id="cR" onchange="CF.race=this.value;render()">${RACES.map(r=>`<option ${r===CF.race?'selected':''}>${r}</option>`).join('')}</select><div style="font-size:11px;color:#6aaf6a;margin-top:4px;padding:6px;background:#1a2a1a;border-radius:4px"><div style="color:#c8a96e;font-weight:600;margin-bottom:2px">${CF.race} Traits</div><div>${ri.traits||'None listed'}</div><div style="color:#8a8070;margin-top:2px;font-style:italic">${ri.bonus||''}</div></div><label>Class</label><select id="cC">${CLASSES.map(c=>`<option ${c===CF.cls?'selected':''}>${c}</option>`).join('')}</select><label>Background</label><select id="cB">${BACKGROUNDS.map(b=>`<option ${b===CF.bg?'selected':''}>${b}</option>`).join('')}</select><label>Ability Scores</label><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">${['str','dex','con','int','wis','cha'].map(s=>`<div><div style="font-size:10px;color:#8a8070;text-align:center">${s.toUpperCase()}</div><input type="number" id="c_${s}" value="${CF[s]}" min="1" max="20" style="text-align:center;font-size:16px"></div>`).join('')}</div><label>Description</label><textarea id="cD" placeholder="Appearance, personality...">${CF.desc}</textarea><div style="text-align:center"><button class="btn" onclick="CF.name=document.getElementById('cN').value;CF.race=document.getElementById('cR').value;CF.cls=document.getElementById('cC').value;CF.bg=document.getElementById('cB').value;CF.desc=document.getElementById('cD').value;['str','dex','con','int','wis','cha'].forEach(s=>CF[s]=document.getElementById('c_'+s).value);saveChar()">Create Character</button></div></div></div>`;return}
 if(S.phase==="lobby"){const ps=g?.players?Object.entries(g.players):[];const rdy=ps.filter(([k,v])=>v.ch);const isH=g?.host===LP;const solo=g?.mode==='solo';
   app.innerHTML=`<div class="header"><h1 class="title">AETHELGARD</h1><div class="sub">${solo?'SOLO':'LOBBY'}</div></div><div class="center"><div class="panel">${ps.map(([p,v])=>{const c=v.ch;return`<div class="char-card" style="cursor:default">${c?`<div class="char-name">${esc(c.cn)}</div><div class="char-info">${c.race} ${c.cls} · ${esc(p)} ${p===g.host?'👑':''}</div>`:`<div style="color:#6a6050">${esc(p)} — creating...</div>`}</div>`}).join('')}${isH&&rdy.length>=(solo?1:2)?`<div style="text-align:center"><button class="btn" onclick="startGame()">⚔ Begin Campaign ⚔</button></div>`:''}${isH&&!solo&&rdy.length<2?`<div style="text-align:center;color:#8a6050;font-size:12px;margin-top:8px">Need 2+ players</div>`:''}<div style="text-align:center;margin-top:12px"><button class="btn-sm btn-danger" onclick="resetGame()">Reset</button></div></div></div>`;
   if(g?.started){S.phase="play";render()}return}
@@ -293,8 +534,8 @@ if(S.phase==="play"){if(!g)return;const ps=g.players||{};const to=g.turnOrder||[
   app.innerHTML=`<div class="game-wrap"><div class="game-header"><div class="title" style="font-size:16px">AETHELGARD</div><div style="font-size:11px;color:#8a8070">${md.i} Day ${cal.day}, ${md.name}</div></div>
   <div class="toolbar"><button class="toolbar-btn" onclick="openCal()">📅 Calendar</button><button class="toolbar-btn" onclick="openSheet('${LP}')">📋 My Sheet</button>${to.map(p=>{const ch=ps[p]?.ch;return p!==LP?`<button class="toolbar-btn" onclick="openSheet('${p}')">${esc(ch?.cn||p)}</button>`:''}).join('')}<button class="toolbar-btn" onclick="S.tab='map';render()">🗺 Map</button><button class="toolbar-btn btn-danger" style="margin-left:auto" onclick="resetGame()">Reset</button></div>
   <div class="turn-banner" style="background:${imt?'#1a2a1a':'#1a1a2e'};color:${imt?'#6aaf6a':'#c8a96e'};border-bottom:2px solid ${imt?'#6aaf6a':'#c8a96e'}">${S.loading?'⏳ The DM weaves the tale...':imt?`⚔ YOUR TURN — ${esc(mc?.cn||'')}`:`⏳ ${esc(ctc?.cn||'...')}'s turn`}</div>
-  <div class="party-strip">${to.map((p,i)=>{const ch=ps[p]?.ch;const cur=i===(g.currentTurn||0);const hp=ch?Math.round(ch.hp/ch.mhp*100):100;const hc=hp<=25?'#c87a6a':hp<=50?'#e8a832':'#6aaf6a';return`<div class="party-member" onclick="openSheet('${p}')" style="background:${cur?'#2a3a2a':'#1a1a28'};border:1px solid ${cur?'#6aaf6a55':'#2a2a3e'}"><div style="font-size:11px;font-weight:600;color:${cur?'#6aaf6a':'#8a8070'}">${esc(ch?.cn||p)} ${cur?'◆':''}</div><div style="font-size:9px;color:${hc}">HP ${ch?.hp||'?'}/${ch?.mhp||'?'}</div></div>`}).join('')}</div>
-  <div class="narrative" id="narrative">${entries.map(e=>{if(e.t==='system')return`<div class="msg-system">${esc(e.text)}</div>`;if(e.t==='dice')return`<div class="msg-dice">${esc(e.text)}</div>`;if(e.t==='dm')return`<div class="msg-dm">${esc(e.text)}</div>`;if(e.t==='player')return`<div><div class="player-tag">⚔ ${esc(e.cn)} (${esc(e.player)})</div><div class="msg-player">${esc(e.text)}</div></div>`;return''}).join('')}${S.loading?'<div class="msg-system" style="font-size:12px;color:#6a6050">⏳ The DM is writing...</div>':''}<div id="narr-end"></div></div>
+  <div class="party-strip">${to.map((p,i)=>{const ch=ps[p]?.ch;const cur=i===(g.currentTurn||0);const hp=ch?Math.round(ch.hp/ch.mhp*100):100;const hc=hp<=25?'#c87a6a':hp<=50?'#e8a832':'#6aaf6a';return`<div class="party-member" onclick="openSheet('${p}')" style="background:${cur?'#2a3a2a':'#1a1a28'};border:1px solid ${cur?'#6aaf6a55':'#2a2a3e'}"><div style="font-size:11px;font-weight:600;color:${cur?'#6aaf6a':'#8a8070'}">${esc(ch?.cn||p)} ${cur?'◆':''}</div><div style="font-size:9px;color:${hc}">HP ${ch?.hp||'?'}/${ch?.mhp||'?'}</div>${(ch?.conditions||[]).length?`<div style="font-size:8px;color:#c87a6a;margin-top:1px">${ch.conditions.join(', ')}</div>`:''}</div>`}).join('')}</div>
+  <div class="narrative" id="narrative">${entries.map(e=>{if(e.t==='system')return`<div class="msg-system">${esc(e.text)}</div>`;if(e.t==='dice')return`<div class="msg-dice">${esc(e.text)}</div>`;if(e.t==='inv')return`<div class="msg-inv">${e.text}</div>`;if(e.t==='dm')return`<div class="msg-dm">${esc(e.text)}</div>`;if(e.t==='player')return`<div><div class="player-tag">⚔ ${esc(e.cn)} (${esc(e.player)})</div><div class="msg-player">${esc(e.text)}</div></div>`;return''}).join('')}${S.loading?'<div class="msg-system" style="font-size:12px;color:#6a6050">⏳ The DM is writing...</div>':''}<div id="narr-end"></div></div>
   <div class="input-bar"><input type="text" id="actionIn" value="${esc(S.act)}" placeholder="${imt?'What does '+(mc?.cn||'')+' do?':'Waiting for '+(ctc?.cn||'...')}" ${!imt||S.loading?'disabled':''} onkeydown="if(event.key==='Enter'){S.act=this.value;submitAction()}" oninput="S.act=this.value"><button class="btn-sm" style="padding:10px 16px;opacity:${imt&&!S.loading?1:0.4}" onclick="S.act=document.getElementById('actionIn').value;submitAction()" ${!imt||S.loading?'disabled':''}>▸</button></div>
   <div class="footer-bar"><span>/roll 1d20+3</span><span onclick="openCal()">${md.i} ${md.name}, Day ${cal.day}</span><span onclick="resetGame()">Reset</span></div></div>`;
   scrollN();if(imt&&!S.loading){const inp=document.getElementById('actionIn');if(inp)inp.focus()}}}
