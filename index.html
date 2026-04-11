@@ -611,6 +611,14 @@ function updateVaultDiscovery(locId){
 function submitAction(){
   const text=state.actionText.trim();
   if(!text||state.loading)return;
+  
+  // Check if it's actually this player's turn (unless solo)
+  const isSolo=gameData?.mode==='solo'&&Object.keys(gameData?.players||{}).length===1;
+  if(!isSolo&&gameData?.turn!==state.playerName){
+    // Not your turn in multiplayer
+    return;
+  }
+  
   state.actionText='';
 
   // Dice roll command
@@ -1047,7 +1055,7 @@ function render(){
     const players=Object.entries(gameData.players||{});
     const myChar=gameData.players?.[state.playerName];
     const isMyTurn=gameData.turn===state.playerName;
-    const isSolo=gameData.mode==='solo';
+    const isSolo=gameData.mode==='solo'&&Object.keys(gameData.players||{}).length===1;
     const isHost=gameData.host===state.playerName;
     const canAct=isMyTurn||isSolo; // Solo can always act; multiplayer respects turns
     const currentTurnPlayer=gameData.turn;
@@ -1095,9 +1103,12 @@ function render(){
               ${state.loading?'<div class="msg-system" style="font-size:12px;color:var(--text-dim)">⏳ The DM is writing...</div>':''}
               <div id="narr-end"></div>
             </div>
-            <div class="input-bar">
-              <input type="text" id="actionIn" value="${esc(state.actionText)}" placeholder="${canAct?'What does '+(myChar?.charName||'')+' do?':'Waiting for '+(ctc?.charName||'...')+'...'}" ${!canAct||state.loading?'disabled':''} onkeydown="if(event.key==='Enter'){state.actionText=this.value;submitAction()}" oninput="state.actionText=this.value">
-              <button class="btn-sm" style="padding:10px 16px;background:var(--panel);border:1px solid var(--gold-dim);color:var(--gold);border-radius:4px;cursor:pointer;opacity:${canAct&&!state.loading?1:0.4}" onclick="state.actionText=document.getElementById('actionIn').value;submitAction()" ${!canAct||state.loading?'disabled':''}>▸</button>
+            <div class="input-bar" style="flex-direction:column;gap:4px">
+              ${!isSolo?`<div style="text-align:center;font-size:11px;font-family:var(--font-mono);color:${canAct?'var(--green)':'var(--orange)'};padding:2px">${canAct?'⚔ YOUR TURN — '+esc(myChar?.charName||''):'⏳ '+esc(ctc?.charName||'Someone')+'\'s turn...'}</div>`:''}
+              <div style="display:flex;gap:6px">
+                <input type="text" id="actionIn" value="${esc(state.actionText)}" placeholder="${canAct?'What does '+(myChar?.charName||'')+' do?':'Waiting for '+(ctc?.charName||'...')+'...'}" ${!canAct||state.loading?'disabled':''} onkeydown="if(event.key==='Enter'){state.actionText=this.value;submitAction()}" oninput="state.actionText=this.value">
+                <button class="btn-sm" style="padding:10px 16px;background:var(--panel);border:1px solid var(--gold-dim);color:var(--gold);border-radius:4px;cursor:pointer;opacity:${canAct&&!state.loading?1:0.4}" onclick="state.actionText=document.getElementById('actionIn').value;submitAction()" ${!canAct||state.loading?'disabled':''}>▸</button>
+              </div>
             </div>
             <div class="footer-bar">
               <span>/roll 1d20+3</span>
